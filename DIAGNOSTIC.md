@@ -100,12 +100,16 @@ Il suffit d'ajouter la ligne ```security: 'is_granted("ROLE_USER")'``` dans geCo
 ## testPayingMyOrderMarksItPaid
 
 **Symptôme** :
+Le format JSON est incorrect
 
 **Cause** :
+Dans le fichier ```OrderService.php```, on met à jour le statut, mais pas la base de donnée.
 
 **Règle du module en jeu** :
+Il faut mettre à jour la base de donnée lorsqu'on modifie des data.
 
 **Correctif** :
+Il suffit de rajouter la ligne ```$this->orderRepository->flush()``` à la fin de la fonction ```pay``` pour enregistrer la modification en base.
 
 ## testRefreshingTwiceWithTheSameTokenIsUnauthorized
 
