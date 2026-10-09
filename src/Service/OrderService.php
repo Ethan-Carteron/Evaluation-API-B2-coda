@@ -41,7 +41,7 @@ class OrderService
             dish: $this->dishService->toList($dish),
             quantity: $line->getQuantity(),
             // le sous-total ne vient d'aucune colonne : il se recalcule à chaque lecture
-            subtotal: $dish->getPrice(),
+            subtotal: $dish->getPrice() * $line->getQuantity(),
         );
     }
 
@@ -126,6 +126,9 @@ class OrderService
 
         if (null !== $foreignLine) {
             throw new OrderRestaurantMismatchException();
+        }
+        if (OrderStatus::Paid === $order->getStatus()) {
+            throw new OrderAlreadyPaidException();
         }
 
         // aucune garde de doublon : le même plat peut figurer deux fois, une ligne vaut un plat
