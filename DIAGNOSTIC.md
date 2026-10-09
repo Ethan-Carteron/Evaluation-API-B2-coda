@@ -14,7 +14,7 @@ La méthode ```getCreatedBy``` ne fonctionne pas, car le fichier ```Order.php```
 Le state provider est chargé d'apporter un object valide pour permettre une erreur 404 avant d'envoyer la requête.
 
 **Correctif** :
-Il suffit d'ajouter la ligne ```provider: OrderCollectionProvider::class,```
+Il suffit d'ajouter la ligne ```provider: OrderProvider::class,```
 
 ## testAddingALineToAPaidOrderIsAConflict
 
@@ -124,9 +124,13 @@ Passage de la ligne ```single_use: true``` au lieu de false.
 ## testRemovingALineFromSomeoneElsesOrderIsForbidden
 
 **Symptôme** :
+Le code renvoie 204 au lieu de 403.
 
 **Cause** :
+Dans le fichier ```Order.php```, les droits spécifient qu'il faut être propriétaire de l'ordre OU être connecté.
 
 **Règle du module en jeu** :
+C'est la requête envoyée à OpenAPI qui doit gérer la sécurité.
 
 **Correctif** :
+Il suffit de supprimer la première partie de la condition or, pour passer de ```security: "is_granted('ROLE_USER') or object.getCreatedBy() == user",``` à  ```security: "object.getCreatedBy() == user",```
